@@ -25,6 +25,7 @@ content/themes/attila/
 # Build artifacts
 dist/
 *.zip
+!iron-bulwark.zip
 
 # SSL certificates (if generated locally)
 ssl/
