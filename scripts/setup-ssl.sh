@@ -63,7 +63,39 @@ sudo systemctl stop nginx
 
 # Get SSL certificate
 log_info "Obtaining SSL certificate..."
-if sudo certbot certonly --standalone -d $DOMAIN -d www.$DOMAIN --email $EMAIL --agree-tos --non-interactive; then
+
+# Check if port 80 is in use and handle it
+if sudo lsof -i :80 | grep -q LISTEN; then
+    log_warning "Port 80 is in use (likely by nginx). Stopping nginx temporarily for SSL setup..."
+    NGINX_WAS_RUNNING=true
+    sudo systemctl stop nginx
+
+    # Get SSL certificate
+    if sudo certbot certonly --standalone -d $DOMAIN -d www.$DOMAIN --email $EMAIL --agree-tos --non-interactive; then
+        log_success "SSL certificate obtained successfully"
+        SSL_SUCCESS=true
+    else
+        log_warning "SSL certificate setup failed"
+        SSL_SUCCESS=false
+    fi
+
+    # Restart nginx if it was running
+    if [ "$NGINX_WAS_RUNNING" = true ]; then
+        log_info "Restarting nginx..."
+        sudo systemctl start nginx
+    fi
+else
+    # Port 80 is free, use standalone method
+    if sudo certbot certonly --standalone -d $DOMAIN -d www.$DOMAIN --email $EMAIL --agree-tos --non-interactive; then
+        log_success "SSL certificate obtained successfully"
+        SSL_SUCCESS=true
+    else
+        log_warning "SSL certificate setup failed"
+        SSL_SUCCESS=false
+    fi
+fi
+
+if [ "$SSL_SUCCESS" = true ]; then
     log_success "SSL certificate obtained successfully!"
 
     # Update Nginx configuration with SSL
