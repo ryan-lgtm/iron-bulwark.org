@@ -17,14 +17,60 @@ Get your Iron County community blog up and running in minutes!
 ssh ubuntu@your-vps-ip
 
 # Download and run setup script
-wget https://raw.githubusercontent.com/your-repo/iron-bulwark/main/scripts/setup.sh
+wget https://raw.githubusercontent.com/ryan-lgtm/iron-bulwark.org/main/scripts/setup.sh
 chmod +x setup.sh
 ./setup.sh your-domain.com your-email@example.com
+
+# Note: After Docker installation, you may need to log out and back in
+# for Docker permissions to take effect. If you get permission errors, run:
+# logout
+# Then SSH back in and continue with the setup.
 ```
+
+### Troubleshooting Docker Issues
+
+If you encounter Docker permission issues:
+
+1. **Log out and back in** after Docker installation:
+   ```bash
+   logout
+   # Then SSH back in
+   ```
+
+2. **Manual Docker setup** (if needed):
+   ```bash
+   # Add your user to docker group
+   sudo usermod -aG docker $USER
+
+   # Restart Docker service
+   sudo systemctl restart docker
+
+   # Log out and back in again
+   logout
+   ```
+
+3. **Alternative: Rootless Docker** (if you can't get permissions):
+   ```bash
+   # Install rootless Docker
+   curl -fsSL https://get.docker.com/rootless | sh
+   ```
+
+### Alternative: Basic Setup (No Docker)
+
+If Docker setup fails completely, try the basic setup script:
+
+```bash
+# Download and run basic setup script (no Docker required)
+wget https://raw.githubusercontent.com/ryan-lgtm/iron-bulwark.org/main/scripts/setup-basic.sh
+chmod +x setup-basic.sh
+./setup-basic.sh your-domain.com your-email@example.com
+```
+
+**Note:** The basic setup installs Ghost directly on your server without Docker. It's simpler but less flexible for updates and scaling.
 
 ### Manual Setup
 
-If automated setup fails:
+If both automated setups fail:
 
 ```bash
 # Update system
@@ -39,7 +85,7 @@ sudo curl -L "https://github.com/docker/compose/releases/download/v2.24.0/docker
 sudo chmod +x /usr/local/bin/docker-compose
 
 # Clone project
-git clone <your-repo-url> iron-bulwark
+git clone https://github.com/ryan-lgtm/iron-bulwark.org.git iron-bulwark
 cd iron-bulwark
 
 # Configure environment

@@ -105,7 +105,7 @@ sudo chmod +x /usr/local/bin/docker-compose
 
 ```bash
 # Clone your project
-git clone <your-repository-url> iron-bulwark
+git clone https://github.com/ryan-lgtm/iron-bulwark.org.git iron-bulwark
 cd iron-bulwark
 
 # Copy and configure environment

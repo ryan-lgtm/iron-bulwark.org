@@ -13,7 +13,8 @@ BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
 # Configuration
-PROJECT_DIR="/home/ubuntu/iron-bulwark"
+USER_HOME=$(eval echo ~$USER)
+PROJECT_DIR="$USER_HOME/iron-bulwark"
 DOMAIN=""
 EMAIL=""
 
@@ -36,8 +37,16 @@ log_error() {
 
 # Check if running as root
 if [[ $EUID -eq 0 ]]; then
-   log_error "This script should not be run as root. Please run as ubuntu user."
+   log_error "This script should not be run as root. Please run as a regular user with sudo access."
+   log_info "Example: If your user is 'admin', run: sudo -u admin ./setup.sh"
    exit 1
+fi
+
+# Check if user has sudo access
+if ! sudo -n true 2>/dev/null; then
+    log_error "Your user needs sudo access to run this script."
+    log_info "Ask your system administrator to add your user to the sudo group."
+    exit 1
 fi
 
 # Get domain and email
@@ -74,22 +83,50 @@ sudo ufw --force enable
 log_info "Installing Docker..."
 curl -fsSL https://get.docker.com -o get-docker.sh
 sudo sh get-docker.sh
+
+# Configure Docker for non-root user
+log_info "Configuring Docker for non-root user..."
 sudo usermod -aG docker $USER
+
+# Create docker group if it doesn't exist
+sudo groupadd -f docker
+
+# Set proper permissions for Docker socket
+sudo chown root:docker /var/run/docker.sock 2>/dev/null || true
+
+# Restart Docker service to apply changes
+sudo systemctl restart docker
 
 # Install Docker Compose
 log_info "Installing Docker Compose..."
 sudo curl -L "https://github.com/docker/compose/releases/download/v2.24.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 sudo chmod +x /usr/local/bin/docker-compose
 
+# Test Docker setup
+log_info "Testing Docker installation..."
+if docker run --rm hello-world >/dev/null 2>&1; then
+    log_success "Docker is working correctly"
+else
+    log_warning "Docker test failed. You may need to log out and back in, or run: sudo systemctl restart docker"
+fi
+
 # Create project directory
 log_info "Setting up project directory..."
 if [ ! -d "$PROJECT_DIR" ]; then
     mkdir -p $PROJECT_DIR
+    if [ $? -ne 0 ]; then
+        log_error "Failed to create project directory. Please check permissions."
+        exit 1
+    fi
 fi
+
+# Ensure user owns the directory
+sudo chown -R $USER:$USER $USER_HOME
+chmod -R 755 $PROJECT_DIR
 
 # Clone or copy project files (assuming they're already there)
 # cd $PROJECT_DIR
-# git clone <your-repo> .
+# git clone https://github.com/ryan-lgtm/iron-bulwark.org.git .
 
 # Set up environment file
 log_info "Setting up environment configuration..."
@@ -178,21 +215,23 @@ fi
 
 # Set up automatic backups
 log_info "Setting up backup system..."
-sudo mkdir -p /home/ubuntu/backups
-sudo chown ubuntu:ubuntu /home/ubuntu/backups
+BACKUP_DIR="$USER_HOME/backups"
+sudo mkdir -p $BACKUP_DIR
+sudo chown $USER:$USER $BACKUP_DIR
 
 # Create backup script
-sudo tee /home/ubuntu/backup.sh > /dev/null <<EOF
+sudo tee $USER_HOME/backup.sh > /dev/null <<EOF
 #!/bin/bash
 DATE=\$(date +%Y%m%d_%H%M%S)
-BACKUP_DIR="/home/ubuntu/backups"
+BACKUP_DIR="$USER_HOME/backups"
+PROJECT_DIR="$USER_HOME/iron-bulwark"
 
 # Database backup
-cd /home/ubuntu/iron-bulwark
+cd \$PROJECT_DIR
 docker-compose -f docker-compose.prod.yml exec -T mysql mysqldump -u ghost_prod -p\$DB_PASSWORD ghost_prod_db > \$BACKUP_DIR/db_\$DATE.sql
 
 # Content backup
-tar -czf \$BACKUP_DIR/content_\$DATE.tar.gz /home/ubuntu/iron-bulwark/content/
+tar -czf \$BACKUP_DIR/content_\$DATE.tar.gz \$PROJECT_DIR/content/
 
 # Clean old backups (keep last 7 days)
 find \$BACKUP_DIR -name "*.sql" -mtime +7 -delete
@@ -201,10 +240,10 @@ find \$BACKUP_DIR -name "*.tar.gz" -mtime +7 -delete
 echo "Backup completed: \$DATE"
 EOF
 
-sudo chmod +x /home/ubuntu/backup.sh
+sudo chmod +x $USER_HOME/backup.sh
 
 # Set up daily backup cron job
-(crontab -l ; echo "0 2 * * * /home/ubuntu/backup.sh") | crontab -
+(crontab -l ; echo "0 2 * * * $USER_HOME/backup.sh") | crontab -
 
 # Configure automatic security updates
 log_info "Configuring automatic security updates..."
@@ -232,7 +271,7 @@ echo "3. Create the 'news-updates' and 'opinions' tags"
 echo "4. Configure Mailgun for newsletters"
 echo "5. Set up Facebook integration"
 echo ""
-echo "Backup Location: /home/ubuntu/backups/"
+echo "Backup Location: $USER_HOME/backups/"
 echo "Project Directory: $PROJECT_DIR"
 echo ""
 log_warning "Please save your passwords securely and change the admin password after first login!"
