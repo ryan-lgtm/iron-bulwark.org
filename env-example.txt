@@ -1,0 +1,35 @@
+# Ghost Configuration
+NODE_ENV=production
+url=https://your-domain.com
+
+# Database Configuration
+database__client=mysql
+database__connection__host=mysql
+database__connection__user=ghost_prod
+database__connection__password=YOUR_STRONG_DB_PASSWORD
+database__connection__database=ghost_prod_db
+
+# Mailgun Configuration (for newsletters)
+mail__transport=SMTP
+mail__options__service=Mailgun
+mail__options__auth__user=postmaster@your-domain.mailgun.org
+mail__options__auth__pass=YOUR_MAILGUN_SMTP_PASSWORD
+mail__options__host=smtp.mailgun.org
+mail__options__port=587
+
+# Site Information
+site__title=Iron County Community Blog
+site__description=Stay informed about Iron County government, taxes, and community news
+site__url=https://your-domain.com
+
+# Facebook Integration (optional)
+FACEBOOK_APP_ID=your_facebook_app_id
+FACEBOOK_APP_SECRET=your_facebook_app_secret
+FACEBOOK_GROUP_ID=1465849137537076
+
+# Admin Configuration (initial setup)
+GHOST_SETUP__ADMIN__EMAIL=admin@your-domain.com
+GHOST_SETUP__ADMIN__PASSWORD=CHANGE_THIS_STRONG_PASSWORD
+
+# Security
+GHOST_SETUP__DB__MYSQL__SSL__REJECT_UNAUTHORIZED=true

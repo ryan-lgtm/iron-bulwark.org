@@ -1,0 +1,44 @@
+# Dependencies
+node_modules/
+yarn-error.log
+
+# Ghost
+content/data/ghost.db
+content/logs/
+content/adapters/
+content/settings/
+content/images/
+content/themes/casper/
+content/themes/attila/
+
+# Environment variables
+.env
+.env.local
+.env.production
+
+# Development
+.DS_Store
+*.log
+*.swp
+*.swo
+
+# Build artifacts
+dist/
+*.zip
+
+# SSL certificates (if generated locally)
+ssl/
+certs/
+
+# Backup files
+*.bak
+backups/
+
+# IDE
+.vscode/
+.idea/
+*.tmp
+
+# OS
+Thumbs.db
+Desktop.ini

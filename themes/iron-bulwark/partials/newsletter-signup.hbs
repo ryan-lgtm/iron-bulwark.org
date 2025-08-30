@@ -1,0 +1,142 @@
+{{#if @custom.show_newsletter_signup}}
+<div class="newsletter-signup gh-outer">
+    <div class="gh-inner">
+        <div class="newsletter-content">
+            <h3 class="newsletter-title">Stay Informed</h3>
+            <p class="newsletter-description">
+                Get the latest Iron County news, government updates, and community announcements delivered to your inbox.
+            </p>
+            <form class="newsletter-form" data-members-form="signup">
+                <div class="form-row">
+                    <input
+                        class="newsletter-email"
+                        data-members-email
+                        type="email"
+                        placeholder="Enter your email address"
+                        required
+                    />
+                    <button class="newsletter-submit" type="submit">
+                        Subscribe
+                    </button>
+                </div>
+                <div class="form-success" data-members-success style="display: none;">
+                    <p>Thanks for subscribing! Check your email for a confirmation link.</p>
+                </div>
+                <div class="form-error" data-members-error style="display: none;">
+                    <p>There was an error subscribing. Please try again.</p>
+                </div>
+            </form>
+            <p class="newsletter-privacy">
+                We respect your privacy. Unsubscribe at any time.
+            </p>
+        </div>
+    </div>
+</div>
+
+<style>
+.newsletter-signup {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 3rem 0;
+    margin: 3rem 0;
+}
+
+.newsletter-content {
+    text-align: center;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.newsletter-title {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    font-weight: 600;
+}
+
+.newsletter-description {
+    font-size: 1.1rem;
+    margin-bottom: 2rem;
+    opacity: 0.9;
+    line-height: 1.6;
+}
+
+.newsletter-form {
+    margin-bottom: 1.5rem;
+}
+
+.form-row {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.newsletter-email {
+    flex: 1;
+    padding: 0.75rem 1rem;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    background: white;
+    color: #333;
+}
+
+.newsletter-email:focus {
+    outline: 2px solid #4f46e5;
+    outline-offset: 2px;
+}
+
+.newsletter-submit {
+    padding: 0.75rem 1.5rem;
+    background: #059669;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.newsletter-submit:hover {
+    background: #047857;
+}
+
+.newsletter-submit:disabled {
+    background: #6b7280;
+    cursor: not-allowed;
+}
+
+.form-success {
+    color: #10b981;
+    font-weight: 500;
+}
+
+.form-error {
+    color: #ef4444;
+    font-weight: 500;
+}
+
+.newsletter-privacy {
+    font-size: 0.9rem;
+    opacity: 0.8;
+    margin: 0;
+}
+
+@media (max-width: 640px) {
+    .form-row {
+        flex-direction: column;
+    }
+
+    .newsletter-title {
+        font-size: 1.75rem;
+    }
+
+    .newsletter-description {
+        font-size: 1rem;
+    }
+}
+</style>
+{{/if}}

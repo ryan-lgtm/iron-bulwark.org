@@ -1,0 +1,80 @@
+{{#if @custom.show_facebook_feed}}
+<div class="facebook-feed gh-outer">
+    <div class="gh-inner">
+        <h2 class="feed-title">Latest from Iron County Community</h2>
+        <div id="facebook-feed-container">
+            <div class="facebook-post-loading">
+                <p>Loading Facebook posts...</p>
+            </div>
+        </div>
+        <div class="facebook-feed-footer">
+            <a href="https://www.facebook.com/groups/{{@custom.facebook_group_id}}" target="_blank" rel="noopener noreferrer" class="facebook-group-link">
+                View All Posts on Facebook →
+            </a>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Facebook SDK integration would go here
+    // This is a placeholder for the Facebook feed functionality
+    const feedContainer = document.getElementById('facebook-feed-container');
+    if (feedContainer) {
+        feedContainer.innerHTML = `
+            <div class="facebook-placeholder">
+                <p>🔗 Facebook integration will display the latest posts from the Iron County community group here.</p>
+                <p>Connect your Facebook app to enable automatic post feeds.</p>
+            </div>
+        `;
+    }
+});
+</script>
+
+<style>
+.facebook-feed {
+    margin: 3rem 0;
+    background: #f8f9fa;
+    padding: 2rem 0;
+}
+
+.feed-title {
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+    color: #333;
+    text-align: center;
+}
+
+.facebook-placeholder {
+    text-align: center;
+    padding: 2rem;
+    background: white;
+    border-radius: 8px;
+    border: 1px solid #e1e5e9;
+}
+
+.facebook-placeholder p {
+    margin: 0.5rem 0;
+    color: #666;
+}
+
+.facebook-feed-footer {
+    text-align: center;
+    margin-top: 1.5rem;
+}
+
+.facebook-group-link {
+    display: inline-block;
+    padding: 0.75rem 1.5rem;
+    background: #1877f2;
+    color: white;
+    text-decoration: none;
+    border-radius: 6px;
+    transition: background 0.2s ease;
+}
+
+.facebook-group-link:hover {
+    background: #166fe5;
+}
+</style>
+{{/if}}
