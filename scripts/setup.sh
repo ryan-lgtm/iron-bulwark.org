@@ -128,14 +128,26 @@ log_info "Setting ownership for user: $CURRENT_USER, group: $CURRENT_GROUP"
 sudo chown -R $CURRENT_USER:$CURRENT_GROUP $USER_HOME 2>/dev/null || true
 chmod -R 755 $PROJECT_DIR
 
-# Clone or copy project files (assuming they're already there)
-# cd $PROJECT_DIR
-# git clone https://github.com/ryan-lgtm/iron-bulwark.org.git .
+# Clone project files
+log_info "Cloning Iron Bulwark project..."
+if [ ! -d "$PROJECT_DIR/.git" ]; then
+    git clone https://github.com/ryan-lgtm/iron-bulwark.org.git $PROJECT_DIR
+else
+    log_info "Project already exists, pulling latest changes..."
+    cd $PROJECT_DIR
+    git pull
+    cd -
+fi
 
 # Set up environment file
 log_info "Setting up environment configuration..."
 if [ ! -f "$PROJECT_DIR/.env" ]; then
-    cp $PROJECT_DIR/env-example.txt $PROJECT_DIR/.env
+    if [ -f "$PROJECT_DIR/env-example.txt" ]; then
+        cp $PROJECT_DIR/env-example.txt $PROJECT_DIR/.env
+    else
+        log_error "env-example.txt not found in project directory. Please check the repository."
+        exit 1
+    fi
 
     # Generate strong passwords
     DB_PASSWORD=$(openssl rand -base64 32)

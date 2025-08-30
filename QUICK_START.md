@@ -21,6 +21,13 @@ wget https://raw.githubusercontent.com/ryan-lgtm/iron-bulwark.org/main/scripts/s
 chmod +x setup.sh
 ./setup.sh your-domain.com your-email@example.com
 
+# The script will automatically:
+# - Install Docker and Docker Compose
+# - Clone the Iron Bulwark repository
+# - Set up environment variables
+# - Configure Nginx and SSL
+# - Start the Ghost blog
+
 # Important: If you see "Docker test failed" message:
 # Option 1: Continue with continue-setup script
 # wget https://raw.githubusercontent.com/ryan-lgtm/iron-bulwark.org/main/scripts/continue-setup.sh

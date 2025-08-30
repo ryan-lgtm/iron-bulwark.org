@@ -67,10 +67,26 @@ else
     exit 1
 fi
 
+# Clone project if needed
+if [ ! -d "$PROJECT_DIR/.git" ]; then
+    log_info "Cloning Iron Bulwark project..."
+    git clone https://github.com/ryan-lgtm/iron-bulwark.org.git $PROJECT_DIR
+else
+    log_info "Project directory exists, checking for updates..."
+    cd $PROJECT_DIR
+    git pull
+    cd -
+fi
+
 # Set up environment file
 log_info "Setting up environment configuration..."
 if [ ! -f "$PROJECT_DIR/.env" ]; then
-    cp $PROJECT_DIR/env-example.txt $PROJECT_DIR/.env
+    if [ -f "$PROJECT_DIR/env-example.txt" ]; then
+        cp $PROJECT_DIR/env-example.txt $PROJECT_DIR/.env
+    else
+        log_error "env-example.txt not found in project directory. Please check the repository."
+        exit 1
+    fi
 
     # Generate strong passwords
     DB_PASSWORD=$(openssl rand -base64 32)
