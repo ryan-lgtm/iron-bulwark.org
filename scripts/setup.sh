@@ -204,8 +204,47 @@ sleep 30
 log_info "Installing and configuring Nginx..."
 sudo apt install -y nginx
 
-# Create Nginx configuration
+# Create initial HTTP-only Nginx configuration (no SSL yet)
 sudo tee /etc/nginx/sites-available/$DOMAIN > /dev/null <<EOF
+server {
+    listen 80;
+    server_name $DOMAIN www.$DOMAIN;
+
+    location / {
+        proxy_pass http://127.0.0.1:2368;
+        proxy_set_header Host \$host;
+        proxy_set_header X-Real-IP \$remote_addr;
+        proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto \$scheme;
+    }
+}
+EOF
+
+# Enable site
+sudo ln -s /etc/nginx/sites-available/$DOMAIN /etc/nginx/sites-enabled/ 2>/dev/null || true
+sudo nginx -t
+
+if [ $? -eq 0 ]; then
+    sudo systemctl reload nginx
+    log_success "Nginx configured successfully (HTTP only)"
+else
+    log_error "Nginx configuration test failed"
+    exit 1
+fi
+
+# Install Certbot for SSL
+log_info "Installing Certbot for SSL certificates..."
+sudo apt install -y certbot python3-certbot-nginx
+
+# Get SSL certificate
+log_info "Obtaining SSL certificate..."
+sudo certbot certonly --standalone -d $DOMAIN -d www.$DOMAIN --email $EMAIL --agree-tos --non-interactive
+
+if [ $? -eq 0 ]; then
+    log_success "SSL certificate obtained successfully"
+
+    # Update Nginx configuration to include HTTPS
+    sudo tee /etc/nginx/sites-available/$DOMAIN > /dev/null <<EOF
 server {
     listen 80;
     server_name $DOMAIN www.$DOMAIN;
@@ -229,31 +268,18 @@ server {
 }
 EOF
 
-# Enable site
-sudo ln -s /etc/nginx/sites-available/$DOMAIN /etc/nginx/sites-enabled/ 2>/dev/null || true
-sudo nginx -t
-
-if [ $? -eq 0 ]; then
-    sudo systemctl reload nginx
-    log_success "Nginx configured successfully"
+    # Test and reload nginx with SSL config
+    sudo nginx -t
+    if [ $? -eq 0 ]; then
+        sudo systemctl reload nginx
+        log_success "Nginx SSL configuration updated successfully"
+    else
+        log_error "SSL Nginx configuration test failed"
+        log_warning "Your site will work on HTTP but SSL setup failed"
+    fi
 else
-    log_error "Nginx configuration test failed"
-fi
-
-# Install Certbot for SSL
-log_info "Installing Certbot for SSL certificates..."
-sudo apt install -y certbot python3-certbot-nginx
-
-# Get SSL certificate
-log_info "Obtaining SSL certificate..."
-sudo certbot certonly --standalone -d $DOMAIN -d www.$DOMAIN --email $EMAIL --agree-tos --non-interactive
-
-if [ $? -eq 0 ]; then
-    log_success "SSL certificate obtained successfully"
-    # Reload Nginx to use SSL
-    sudo systemctl reload nginx
-else
-    log_warning "SSL certificate setup failed. You may need to run this manually."
+    log_warning "SSL certificate setup failed. Your site will work on HTTP only."
+    log_info "You can manually set up SSL later with: sudo certbot --nginx -d $DOMAIN"
 fi
 
 # Set up automatic backups

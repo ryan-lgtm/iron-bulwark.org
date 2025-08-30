@@ -47,7 +47,12 @@ chmod +x setup.sh
 # ./debug-setup.sh
 # This will show you exactly what's wrong and how to fix it
 
-# Option 4: Manual clone (if git clone fails)
+# Option 4: Manual SSL setup (if SSL certificate fails)
+# wget https://raw.githubusercontent.com/ryan-lgtm/iron-bulwark.org/main/scripts/setup-ssl.sh
+# chmod +x setup-ssl.sh
+# ./setup-ssl.sh your-domain.com your-email@example.com
+
+# Option 5: Manual clone (if git clone fails)
 # mkdir -p ~/iron-bulwark
 # cd ~/iron-bulwark
 # git clone https://github.com/ryan-lgtm/iron-bulwark.org.git .
