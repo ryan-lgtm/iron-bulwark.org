@@ -21,10 +21,18 @@ wget https://raw.githubusercontent.com/ryan-lgtm/iron-bulwark.org/main/scripts/s
 chmod +x setup.sh
 ./setup.sh your-domain.com your-email@example.com
 
-# Note: After Docker installation, you may need to log out and back in
-# for Docker permissions to take effect. If you get permission errors, run:
-# logout
-# Then SSH back in and continue with the setup.
+# Important: If you see "Docker test failed" message:
+# Option 1: Continue with continue-setup script
+# wget https://raw.githubusercontent.com/ryan-lgtm/iron-bulwark.org/main/scripts/continue-setup.sh
+# chmod +x continue-setup.sh
+# ./continue-setup.sh your-domain.com your-email@example.com
+
+# Option 2: Manual steps
+# 1. Log out: logout
+# 2. SSH back in: ssh your-user@your-server
+# 3. Run: sudo systemctl restart docker
+# 4. Test Docker: docker run --rm hello-world
+# 5. Continue with remaining setup steps
 ```
 
 ### Troubleshooting Docker Issues

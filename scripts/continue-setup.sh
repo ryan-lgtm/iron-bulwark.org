@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# Iron Bulwark - VPS Setup Script
-# This script helps set up a new VPS for the Iron County blog
+# Iron Bulwark - Continue Setup Script
+# Run this after Docker permissions are working
 
 set -e
 
@@ -38,15 +38,7 @@ log_error() {
 # Check if running as root
 if [[ $EUID -eq 0 ]]; then
    log_error "This script should not be run as root. Please run as a regular user with sudo access."
-   log_info "Example: If your user is 'admin', run: sudo -u admin ./setup.sh"
    exit 1
-fi
-
-# Check if user has sudo access
-if ! sudo -n true 2>/dev/null; then
-    log_error "Your user needs sudo access to run this script."
-    log_info "Ask your system administrator to add your user to the sudo group."
-    exit 1
 fi
 
 # Get domain and email
@@ -62,75 +54,18 @@ else
     EMAIL=$2
 fi
 
-log_info "Setting up Iron Bulwark blog for domain: $DOMAIN"
+log_info "Continuing Iron Bulwark setup for domain: $DOMAIN"
 
-# Update system
-log_info "Updating system packages..."
-sudo apt update && sudo apt upgrade -y
-
-# Install essential tools
-log_info "Installing essential tools..."
-sudo apt install -y curl wget git htop ufw fail2ban unattended-upgrades software-properties-common
-
-# Configure firewall
-log_info "Configuring firewall..."
-sudo ufw allow ssh
-sudo ufw allow 80
-sudo ufw allow 443
-sudo ufw --force enable
-
-# Install Docker
-log_info "Installing Docker..."
-curl -fsSL https://get.docker.com -o get-docker.sh
-sudo sh get-docker.sh
-
-# Configure Docker for non-root user
-log_info "Configuring Docker for non-root user..."
-sudo usermod -aG docker $USER
-
-# Create docker group if it doesn't exist
-sudo groupadd -f docker
-
-# Set proper permissions for Docker socket
-sudo chown root:docker /var/run/docker.sock 2>/dev/null || true
-
-# Restart Docker service to apply changes
-sudo systemctl restart docker
-
-# Install Docker Compose
-log_info "Installing Docker Compose..."
-sudo curl -L "https://github.com/docker/compose/releases/download/v2.24.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-sudo chmod +x /usr/local/bin/docker-compose
-
-# Test Docker setup
+# Test Docker again
 log_info "Testing Docker installation..."
 if docker run --rm hello-world >/dev/null 2>&1; then
-    log_success "Docker is working correctly"
+    log_success "Docker is working correctly!"
 else
-    log_warning "Docker test failed. This is normal - you may need to log out and back in for Docker permissions to take effect."
-    log_info "Continuing with setup anyway..."
+    log_error "Docker is still not working. Please check Docker installation and permissions."
+    log_info "Try: sudo systemctl restart docker"
+    log_info "Or logout and login again"
+    exit 1
 fi
-
-# Create project directory
-log_info "Setting up project directory..."
-if [ ! -d "$PROJECT_DIR" ]; then
-    mkdir -p $PROJECT_DIR
-    if [ $? -ne 0 ]; then
-        log_error "Failed to create project directory. Please check permissions."
-        exit 1
-    fi
-fi
-
-# Ensure user owns the directory (use proper user/group names)
-CURRENT_USER=$(id -un)
-CURRENT_GROUP=$(id -gn)
-log_info "Setting ownership for user: $CURRENT_USER, group: $CURRENT_GROUP"
-sudo chown -R $CURRENT_USER:$CURRENT_GROUP $USER_HOME 2>/dev/null || true
-chmod -R 755 $PROJECT_DIR
-
-# Clone or copy project files (assuming they're already there)
-# cd $PROJECT_DIR
-# git clone https://github.com/ryan-lgtm/iron-bulwark.org.git .
 
 # Set up environment file
 log_info "Setting up environment configuration..."
@@ -152,16 +87,13 @@ if [ ! -f "$PROJECT_DIR/.env" ]; then
     log_warning "Admin Password: $ADMIN_PASSWORD"
 fi
 
-# Start services
-log_info "Starting Docker services..."
-cd $PROJECT_DIR
-sudo docker-compose -f docker-compose.prod.yml up -d
+# Clone project if needed
+if [ ! -d "$PROJECT_DIR/.git" ]; then
+    log_info "Cloning Iron Bulwark project..."
+    git clone https://github.com/ryan-lgtm/iron-bulwark.org.git $PROJECT_DIR
+fi
 
-# Wait for services to be ready
-log_info "Waiting for services to start..."
-sleep 30
-
-# Install and configure Nginx
+# Install Nginx
 log_info "Installing and configuring Nginx..."
 sudo apt install -y nginx
 
@@ -219,6 +151,8 @@ fi
 
 # Set up automatic backups
 log_info "Setting up backup system..."
+CURRENT_USER=$(id -un)
+CURRENT_GROUP=$(id -gn)
 BACKUP_DIR="$USER_HOME/backups"
 sudo mkdir -p $BACKUP_DIR
 sudo chown $CURRENT_USER:$CURRENT_GROUP $BACKUP_DIR
@@ -253,7 +187,15 @@ sudo chmod +x $USER_HOME/backup.sh
 log_info "Configuring automatic security updates..."
 sudo dpkg-reconfigure --priority=low unattended-upgrades
 
-# Final instructions
+# Start Ghost
+log_info "Starting Ghost blog..."
+cd $PROJECT_DIR
+docker-compose -f docker-compose.prod.yml up -d
+
+# Wait for services to start
+log_info "Waiting for services to start..."
+sleep 30
+
 log_success "Setup completed!"
 echo ""
 echo "========================================"
@@ -265,8 +207,8 @@ echo "Admin panel: https://$DOMAIN/ghost"
 echo ""
 echo "Important Information:"
 echo "- Admin Email: admin@$DOMAIN"
-echo "- Admin Password: (saved in .env file)"
-echo "- Database Password: (saved in .env file)"
+echo "- Admin Password: (saved in $PROJECT_DIR/.env file)"
+echo "- Database Password: (saved in $PROJECT_DIR/.env file)"
 echo ""
 echo "Next Steps:"
 echo "1. Access https://$DOMAIN/ghost to complete setup"
