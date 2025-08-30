@@ -68,13 +68,31 @@ else
 fi
 
 # Clone project if needed
+log_info "Checking project setup..."
+log_info "Target directory: $PROJECT_DIR"
+
 if [ ! -d "$PROJECT_DIR/.git" ]; then
     log_info "Cloning Iron Bulwark project..."
-    git clone https://github.com/ryan-lgtm/iron-bulwark.org.git $PROJECT_DIR
+    if git clone https://github.com/ryan-lgtm/iron-bulwark.org.git $PROJECT_DIR; then
+        log_success "Repository cloned successfully"
+    else
+        log_error "Failed to clone repository. Checking if directory exists..."
+        if [ -d "$PROJECT_DIR" ]; then
+            log_info "Directory exists but no git repo. Please manually clone or remove the directory."
+            exit 1
+        else
+            log_error "Clone failed. Please check your internet connection."
+            exit 1
+        fi
+    fi
 else
     log_info "Project directory exists, checking for updates..."
     cd $PROJECT_DIR
-    git pull
+    if git pull; then
+        log_success "Repository updated successfully"
+    else
+        log_warning "Failed to pull latest changes, continuing with existing version"
+    fi
     cd -
 fi
 

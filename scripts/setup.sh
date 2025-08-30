@@ -130,12 +130,39 @@ chmod -R 755 $PROJECT_DIR
 
 # Clone project files
 log_info "Cloning Iron Bulwark project..."
+log_info "Target directory: $PROJECT_DIR"
+
+# Check if git is installed
+if ! command -v git &> /dev/null; then
+    log_error "Git is not installed. Installing git..."
+    sudo apt install -y git
+fi
+
 if [ ! -d "$PROJECT_DIR/.git" ]; then
-    git clone https://github.com/ryan-lgtm/iron-bulwark.org.git $PROJECT_DIR
+    log_info "Cloning repository..."
+    if git clone https://github.com/ryan-lgtm/iron-bulwark.org.git $PROJECT_DIR; then
+        log_success "Repository cloned successfully"
+    else
+        log_error "Failed to clone repository. Trying alternative approach..."
+        # Try creating directory first
+        mkdir -p $PROJECT_DIR
+        cd $PROJECT_DIR
+        if git init && git remote add origin https://github.com/ryan-lgtm/iron-bulwark.org.git && git pull origin main; then
+            log_success "Repository cloned using alternative method"
+        else
+            log_error "All cloning methods failed. Please check your internet connection and repository access."
+            exit 1
+        fi
+        cd -
+    fi
 else
     log_info "Project already exists, pulling latest changes..."
     cd $PROJECT_DIR
-    git pull
+    if git pull; then
+        log_success "Repository updated successfully"
+    else
+        log_warning "Failed to pull latest changes, continuing with existing version"
+    fi
     cd -
 fi
 

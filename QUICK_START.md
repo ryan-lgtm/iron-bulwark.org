@@ -40,6 +40,18 @@ chmod +x setup.sh
 # 3. Run: sudo systemctl restart docker
 # 4. Test Docker: docker run --rm hello-world
 # 5. Continue with remaining setup steps
+
+# Option 3: Debug first (recommended)
+# wget https://raw.githubusercontent.com/ryan-lgtm/iron-bulwark.org/main/scripts/debug-setup.sh
+# chmod +x debug-setup.sh
+# ./debug-setup.sh
+# This will show you exactly what's wrong and how to fix it
+
+# Option 4: Manual clone (if git clone fails)
+# mkdir -p ~/iron-bulwark
+# cd ~/iron-bulwark
+# git clone https://github.com/ryan-lgtm/iron-bulwark.org.git .
+# Then run the continue-setup script
 ```
 
 ### Troubleshooting Docker Issues
