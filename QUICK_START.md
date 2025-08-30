@@ -52,7 +52,13 @@ chmod +x setup.sh
 # chmod +x setup-ssl.sh
 # ./setup-ssl.sh your-domain.com your-email@example.com
 
-# Option 5: Manual clone (if git clone fails)
+# Option 5: Interactive Manual Setup (if all else fails)
+# wget https://raw.githubusercontent.com/ryan-lgtm/iron-bulwark.org/main/scripts/manual-setup.sh
+# chmod +x manual-setup.sh
+# ./manual-setup.sh
+# This will guide you through each step interactively
+
+# Option 6: Manual clone (if git clone fails)
 # mkdir -p ~/iron-bulwark
 # cd ~/iron-bulwark
 # git clone https://github.com/ryan-lgtm/iron-bulwark.org.git .

@@ -138,32 +138,39 @@ if ! command -v git &> /dev/null; then
     sudo apt install -y git
 fi
 
-if [ ! -d "$PROJECT_DIR/.git" ]; then
+# Handle existing directory
+if [ -d "$PROJECT_DIR" ]; then
+    log_info "Directory exists, checking contents..."
+    if [ -d "$PROJECT_DIR/.git" ]; then
+        log_info "Git repository exists, updating..."
+        cd $PROJECT_DIR
+        # Remove any conflicting files first
+        git reset --hard HEAD
+        git clean -fd
+        if git pull origin main; then
+            log_success "Repository updated successfully"
+        else
+            log_warning "Failed to pull updates, continuing with existing version"
+        fi
+        cd -
+    else
+        log_info "Directory exists but no git repo, removing and cloning fresh..."
+        rm -rf $PROJECT_DIR
+        if git clone https://github.com/ryan-lgtm/iron-bulwark.org.git $PROJECT_DIR; then
+            log_success "Repository cloned successfully"
+        else
+            log_error "Failed to clone repository"
+            exit 1
+        fi
+    fi
+else
     log_info "Cloning repository..."
     if git clone https://github.com/ryan-lgtm/iron-bulwark.org.git $PROJECT_DIR; then
         log_success "Repository cloned successfully"
     else
-        log_error "Failed to clone repository. Trying alternative approach..."
-        # Try creating directory first
-        mkdir -p $PROJECT_DIR
-        cd $PROJECT_DIR
-        if git init && git remote add origin https://github.com/ryan-lgtm/iron-bulwark.org.git && git pull origin main; then
-            log_success "Repository cloned using alternative method"
-        else
-            log_error "All cloning methods failed. Please check your internet connection and repository access."
-            exit 1
-        fi
-        cd -
+        log_error "Failed to clone repository"
+        exit 1
     fi
-else
-    log_info "Project already exists, pulling latest changes..."
-    cd $PROJECT_DIR
-    if git pull; then
-        log_success "Repository updated successfully"
-    else
-        log_warning "Failed to pull latest changes, continuing with existing version"
-    fi
-    cd -
 fi
 
 # Set up environment file
