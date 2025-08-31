@@ -1,3 +1,60 @@
 .gh-article-image {
     grid-column: main-start / main-end;
 }
+
+.gh-article-header .post-meta {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 12px;
+    font-size: 0.9rem;
+    color: var(--secondary-text-color);
+}
+
+.gh-article-header .post-tag {
+    display: inline-block;
+    padding: 3px 10px;
+    background: var(--light-gray-color);
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--dark-gray-color);
+    text-decoration: none;
+}
+
+.gh-article-header .post-tag.tag-opinions {
+    background: #e3f2fd;
+    color: #1976d2;
+}
+
+.gh-article-header .post-tag.tag-news-updates {
+    background: #f3e5f5;
+    color: #7b1fa2;
+}
+
+.gh-article-header .post-tag.tag-education-reading {
+    background: #e8f5e8;
+    color: #388e3c;
+}
+
+.gh-article-header .post-author a {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.gh-article-header .post-author a:hover {
+    text-decoration: underline;
+}
+
+.gh-article-header .post-date {
+    color: var(--secondary-text-color);
+}
+
+@media (max-width: 767px) {
+    .gh-article-header .post-meta {
+        flex-wrap: wrap;
+        gap: 8px;
+        font-size: 0.85rem;
+    }
+}

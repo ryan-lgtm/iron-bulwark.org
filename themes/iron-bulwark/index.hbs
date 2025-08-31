@@ -12,7 +12,7 @@
         <section class="topic news-updates-section">
             <header class="topic-header">
                 <h2 class="topic-name">
-                    <a href="{{url}}">📰 News & Updates</a>
+                    <a href="{{url}}">📰 News &amp; Updates </a>
                 </h2>
                 <p class="topic-description">Latest government decisions, tax information, and community announcements</p>
             </header>
@@ -26,11 +26,22 @@
                             </a>
                         </h3>
                         <p class="topic-article-excerpt">{{excerpt words="20"}}</p>
+                        <div class="topic-article-meta">
+                            {{#primary_tag}}
+                                <span class="topic-article-tag tag-{{slug}}">{{name}}</span>
+                            {{/primary_tag}}
+                            {{#if primary_author}}
+                                <span class="topic-article-author">
+                                    <a href="{{primary_author.url}}">{{primary_author.name}}</a>
+                                </span>
+                            {{/if}}
+                            <time class="topic-article-date" datetime="{{date format="YYYY-MM-DD"}}">{{date format="MMM DD, YYYY"}}</time>
+                        </div>
                     </li>
                     {{/foreach}}
                 </ul>
             {{/get}}
-            <a class="topic-more" href="{{url}}">View All News & Updates →</a>
+            <a class="topic-more" href="{{url}}">View All News &amp; Updates →</a>
         </section>
         {{/foreach}}
     {{/get}}
@@ -40,7 +51,7 @@
         <section class="topic opinions-section">
             <header class="topic-header">
                 <h2 class="topic-name">
-                    <a href="{{url}}">💭 Opinions</a>
+                    <a href="{{url}}">💭 Opinions & Editorials </a>
                 </h2>
                 <p class="topic-description">Local perspectives, editorials, and community voices</p>
             </header>
@@ -54,11 +65,61 @@
                             </a>
                         </h3>
                         <p class="topic-article-excerpt">{{excerpt words="20"}}</p>
+                        <div class="topic-article-meta">
+                            {{#primary_tag}}
+                                <span class="topic-article-tag tag-{{slug}}">{{name}}</span>
+                            {{/primary_tag}}
+                            {{#if primary_author}}
+                                <span class="topic-article-author">
+                                    <a href="{{primary_author.url}}">{{primary_author.name}}</a>
+                                </span>
+                            {{/if}}
+                            <time class="topic-article-date" datetime="{{date format="YYYY-MM-DD"}}">{{date format="MMM DD, YYYY"}}</time>
+                        </div>
                     </li>
                     {{/foreach}}
                 </ul>
             {{/get}}
             <a class="topic-more" href="{{url}}">View All Opinions →</a>
+        </section>
+        {{/foreach}}
+    {{/get}}
+
+    {{#get "tags" filter="slug:education-reading" limit="1"}}
+        {{#foreach tags}}
+        <section class="topic education-reading-section">
+            <header class="topic-header">
+                <h2 class="topic-name">
+                    <a href="{{url}}">📚 Education &amp; Reading </a>
+                </h2>
+                <p class="topic-description">Educational resources, reading materials, and learning opportunities</p>
+            </header>
+            {{#get "posts" order="published_at desc" filter="tag:{{slug}}" limit="5" as |featured|}}
+                <ul class="topic-article-feed">
+                    {{#foreach featured}}
+                    <li class="topic-article">
+                        <h3 class="topic-article-title">
+                            <a class="topic-article-link" href="{{url}}">
+                                {{> "icons/chevron-right"}} {{title}}
+                            </a>
+                        </h3>
+                        <p class="topic-article-excerpt">{{excerpt words="20"}}</p>
+                        <div class="topic-article-meta">
+                            {{#primary_tag}}
+                                <span class="topic-article-tag tag-{{slug}}">{{name}}</span>
+                            {{/primary_tag}}
+                            {{#if primary_author}}
+                                <span class="topic-article-author">
+                                    <a href="{{primary_author.url}}">{{primary_author.name}}</a>
+                                </span>
+                            {{/if}}
+                            <time class="topic-article-date" datetime="{{date format="YYYY-MM-DD"}}">{{date format="MMM DD, YYYY"}}</time>
+                        </div>
+                    </li>
+                    {{/foreach}}
+                </ul>
+            {{/get}}
+            <a class="topic-more" href="{{url}}">View All Education &amp; Reading →</a>
         </section>
         {{/foreach}}
     {{/get}}

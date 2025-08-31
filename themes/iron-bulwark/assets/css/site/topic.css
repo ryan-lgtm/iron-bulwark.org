@@ -57,6 +57,54 @@
     margin: 3px 5px 0 -5px;
 }
 
+.topic-article-meta {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 8px;
+    font-size: 0.85rem;
+    color: var(--secondary-text-color);
+}
+
+.topic-article-tag {
+    display: inline-block;
+    padding: 2px 8px;
+    background: var(--light-gray-color);
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--dark-gray-color);
+    text-decoration: none;
+}
+
+.topic-article-tag.tag-opinions {
+    background: #e3f2fd;
+    color: #1976d2;
+}
+
+.topic-article-tag.tag-news-updates {
+    background: #f3e5f5;
+    color: #7b1fa2;
+}
+
+.topic-article-tag.tag-education-reading {
+    background: #e8f5e8;
+    color: #388e3c;
+}
+
+.topic-article-author a {
+    color: var(--primary-color);
+    text-decoration: none;
+}
+
+.topic-article-author a:hover {
+    text-decoration: underline;
+}
+
+.topic-article-date {
+    color: var(--secondary-text-color);
+}
+
 .topic-more {
     display: inline-block;
     margin-top: 20px;
@@ -68,5 +116,10 @@
 @media (max-width: 767px) {
     .topic-feed {
         grid-template-columns: 1fr;
+    }
+    
+    .topic-article-meta {
+        flex-wrap: wrap;
+        gap: 8px;
     }
 }
