@@ -7,16 +7,16 @@
     align-items: center;
     gap: 12px;
     margin-top: 12px;
-    font-size: 0.9rem;
+    font-size: 1rem;
     color: var(--secondary-text-color);
 }
 
 .gh-article-header .post-tag {
     display: inline-block;
-    padding: 3px 10px;
+    padding: 4px 12px;
     background: var(--light-gray-color);
     border-radius: 12px;
-    font-size: 0.8rem;
+    font-size: 0.9rem;
     font-weight: 500;
     color: var(--dark-gray-color);
     text-decoration: none;
@@ -55,6 +55,6 @@
     .gh-article-header .post-meta {
         flex-wrap: wrap;
         gap: 8px;
-        font-size: 0.85rem;
+        font-size: 0.9rem;
     }
 }

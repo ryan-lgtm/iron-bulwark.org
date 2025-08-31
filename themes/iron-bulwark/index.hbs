@@ -11,10 +11,18 @@
         {{#foreach tags}}
         <section class="topic news-updates-section">
             <header class="topic-header">
-                <h2 class="topic-name">
-                    <a href="{{url}}">📰 News &amp; Updates </a>
-                </h2>
-                <p class="topic-description">Latest government decisions, tax information, and community announcements</p>
+                <div class="topic-header-content">
+                    {{#if feature_image}}
+                        <div class="topic-image">
+                            <img src="{{img_url feature_image size="m"}}" alt="{{name}}" />
+                        </div>
+                    {{else}}
+                        <h2 class="topic-name">
+                            <a href="{{url}}">📰 News &amp; Updates </a>
+                        </h2>
+                    {{/if}}
+                    <p class="topic-description">Latest government decisions, tax information, and community announcements</p>
+                </div>
             </header>
             {{#get "posts" order="published_at desc" filter="tag:{{slug}}" limit="5" as |featured|}}
                 <ul class="topic-article-feed">
@@ -50,10 +58,18 @@
         {{#foreach tags}}
         <section class="topic opinions-section">
             <header class="topic-header">
-                <h2 class="topic-name">
-                    <a href="{{url}}">💭 Opinions & Editorials </a>
-                </h2>
-                <p class="topic-description">Local perspectives, editorials, and community voices</p>
+                <div class="topic-header-content">
+                    {{#if feature_image}}
+                        <div class="topic-image">
+                            <img src="{{img_url feature_image size="m"}}" alt="{{name}}" />
+                        </div>
+                    {{else}}
+                        <h2 class="topic-name">
+                            <a href="{{url}}">💭 Opinions & Editorials </a>
+                        </h2>
+                    {{/if}}
+                    <p class="topic-description">Local perspectives, editorials, and community voices</p>
+                </div>
             </header>
             {{#get "posts" order="published_at desc" filter="tag:{{slug}}" limit="5" as |featured|}}
                 <ul class="topic-article-feed">
@@ -89,10 +105,18 @@
         {{#foreach tags}}
         <section class="topic education-reading-section">
             <header class="topic-header">
-                <h2 class="topic-name">
-                    <a href="{{url}}">📚 Education &amp; Reading </a>
-                </h2>
-                <p class="topic-description">Educational resources, reading materials, and learning opportunities</p>
+                <div class="topic-header-content">
+                    {{#if feature_image}}
+                        <div class="topic-image">
+                            <img src="{{img_url feature_image size="m"}}" alt="{{name}}" />
+                        </div>
+                    {{else}}
+                        <h2 class="topic-name">
+                            <a href="{{url}}">📚 Education &amp; Reading </a>
+                        </h2>
+                    {{/if}}
+                    <p class="topic-description">Educational resources, reading materials, and learning opportunities</p>
+                </div>
             </header>
             {{#get "posts" order="published_at desc" filter="tag:{{slug}}" limit="5" as |featured|}}
                 <ul class="topic-article-feed">

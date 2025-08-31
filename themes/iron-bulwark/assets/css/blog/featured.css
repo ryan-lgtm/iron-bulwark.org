@@ -20,16 +20,16 @@
     align-items: center;
     gap: 12px;
     margin-top: 8px;
-    font-size: 0.85rem;
+    font-size: 0.95rem;
     color: var(--secondary-text-color);
 }
 
 .featured-wrapper .post-tag {
     display: inline-block;
-    padding: 2px 8px;
+    padding: 3px 10px;
     background: var(--light-gray-color);
     border-radius: 12px;
-    font-size: 0.75rem;
+    font-size: 0.85rem;
     font-weight: 500;
     color: var(--dark-gray-color);
     text-decoration: none;
@@ -64,6 +64,17 @@
     color: var(--secondary-text-color);
 }
 
+.featured-wrapper .post-tag-image {
+    flex-shrink: 0;
+}
+
+.featured-wrapper .post-tag-image img {
+    height: 24px;
+    width: auto;
+    object-fit: contain;
+    border-radius: 4px;
+}
+
 .featured-header {
     margin-bottom: 45px;
 }
@@ -85,6 +96,11 @@
     .featured-wrapper .post-meta {
         flex-wrap: wrap;
         gap: 8px;
+        font-size: 0.9rem;
+    }
+    
+    .featured-wrapper .post-tag-image img {
+        height: 20px;
     }
 
     .featured-wrapper .owl .owl-prev,
